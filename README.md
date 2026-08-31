@@ -348,18 +348,6 @@ Pengujian menggunakan `curl` menunjukkan bahwa data berhasil ditampilkan dalam f
 
 ---
 
-# Bukti Dokumentasi
-
-Screenshot yang dapat disertakan dalam repository:
-
-1. Container YugabyteDB yang sedang berjalan menggunakan Docker.
-2. Daftar tabel menggunakan `\dt`.
-3. Isi tabel `mahasiswa`.
-4. Isi tabel `nilai`.
-5. FastAPI yang sedang berjalan menggunakan Uvicorn.
-6. Hasil `curl` endpoint `/mahasiswa`.
-7. Hasil `curl` endpoint `/nilai`.
-
 # Soal 3 — Mekanisme Konsensus Ethereum
 
 ## 1. Pengertian Ethereum
