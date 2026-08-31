@@ -359,3 +359,234 @@ Screenshot yang dapat disertakan dalam repository:
 5. FastAPI yang sedang berjalan menggunakan Uvicorn.
 6. Hasil `curl` endpoint `/mahasiswa`.
 7. Hasil `curl` endpoint `/nilai`.
+
+# Soal 3 — Mekanisme Konsensus Ethereum
+
+## 1. Pengertian Ethereum
+
+Ethereum adalah salah satu blockchain **Layer 1 (L1)** yang memungkinkan transaksi dan menjalankan smart contract secara terdesentralisasi. Ethereum tidak menggunakan satu server pusat, tetapi menggunakan banyak komputer atau node yang saling berkomunikasi untuk menyimpan dan memvalidasi keadaan jaringan.
+
+Ethereum saat ini menggunakan mekanisme konsensus **Proof of Stake (PoS)**. Ethereum beralih dari Proof of Work (PoW) ke Proof of Stake pada tahun 2022. Pada PoS, proses validasi tidak lagi dilakukan oleh penambang menggunakan daya komputasi, tetapi dilakukan oleh **validator** yang melakukan staking ETH.
+
+---
+
+## 2. Apa Itu Proof of Stake?
+
+Proof of Stake adalah mekanisme yang menggunakan aset yang dikunci atau di-*stake* sebagai jaminan bahwa validator akan bertindak dengan benar.
+
+Pada Ethereum, validator melakukan staking ETH. Validator kemudian bertugas untuk:
+
+* memeriksa apakah blok baru valid,
+* memberikan suara atau **attestation** terhadap blok,
+* dan pada kondisi tertentu membuat serta menyebarkan blok baru.
+
+Jika validator menjalankan tugas dengan benar, validator dapat memperoleh reward dalam bentuk ETH. Sebaliknya, validator yang melakukan tindakan tertentu yang merugikan jaringan dapat kehilangan sebagian ETH yang di-*stake* melalui mekanisme penalti atau **slashing**.
+
+Secara sederhana:
+
+```text
+Validator
+    │
+    ├── Stake ETH
+    │
+    ├── Memvalidasi blok
+    │
+    ├── Memberikan attestation
+    │
+    └── Mendapat reward jika berperilaku benar
+```
+
+---
+
+## 3. Validator pada Ethereum
+
+Validator merupakan bagian penting dalam mekanisme konsensus Ethereum.
+
+Untuk menjadi validator secara langsung, pengguna perlu melakukan deposit **32 ETH** ke deposit contract dan menjalankan perangkat lunak yang diperlukan untuk berpartisipasi dalam jaringan. Setelah aktif, validator menerima blok dari jaringan, memeriksa transaksi di dalamnya, kemudian memberikan suara terhadap validitas blok tersebut.
+
+Validator memiliki dua tugas utama:
+
+1. **Mengusulkan blok (block proposal)** ketika dipilih.
+2. **Memberikan attestation** atau suara terhadap blok yang dianggap valid.
+
+Validator yang tidak menjalankan tugasnya dapat kehilangan kesempatan mendapatkan reward, sedangkan tindakan tertentu yang dianggap sebagai perilaku jahat dapat dikenai penalti atau slashing.
+
+---
+
+## 4. Slot dan Epoch
+
+Untuk mengatur waktu dalam Proof of Stake, Ethereum membagi waktu menjadi **slot** dan **epoch**.
+
+* Satu **slot** berlangsung sekitar **12 detik**.
+* Satu **epoch** terdiri dari **32 slot**.
+
+Dengan demikian, satu epoch berlangsung sekitar 6,4 menit.
+
+Pada setiap slot, satu validator dipilih secara acak untuk menjadi **block proposer**.
+
+Validator lainnya yang tergabung dalam committee akan memeriksa blok dan memberikan attestation. Pembagian validator ke dalam committee membantu mengurangi jumlah komunikasi yang harus dilakukan oleh setiap validator.
+
+---
+
+## 5. Proses Konsensus Ethereum
+
+Secara sederhana, proses konsensus Ethereum dapat dijelaskan melalui beberapa tahap.
+
+### Tahap 1 — Transaksi dibuat
+
+Pengguna melakukan transaksi, misalnya mengirim ETH atau menjalankan smart contract.
+
+Transaksi kemudian disebarkan melalui jaringan Ethereum.
+
+### Tahap 2 — Validator dipilih sebagai block proposer
+
+Pada setiap slot, Ethereum memilih satu validator secara acak untuk menjadi **block proposer**.
+
+Validator tersebut mengambil transaksi yang tersedia dan membuat sebuah blok baru.
+
+### Tahap 3 — Blok disebarkan
+
+Blok yang dibuat oleh block proposer kemudian disebarkan ke node-node lain di jaringan.
+
+Node lain menerima blok tersebut dan melakukan pemeriksaan.
+
+Pemeriksaan antara lain memastikan bahwa transaksi di dalam blok valid dan perubahan state yang dihasilkan oleh transaksi tersebut benar.
+
+### Tahap 4 — Validator memberikan Attestation
+
+Validator yang tergabung dalam committee memberikan **attestation**.
+
+Attestation dapat dipahami sebagai suara validator yang menyatakan bahwa validator tersebut menganggap blok tertentu valid dan merupakan bagian yang benar dari rantai blockchain.
+
+Attestation kemudian disebarkan dan digabungkan dengan attestation dari validator lainnya.
+
+### Tahap 5 — Menentukan rantai yang benar
+
+Dalam kondisi normal, validator akan memiliki pandangan yang sama mengenai blok berikutnya.
+
+Namun, dalam kondisi tertentu dapat terjadi lebih dari satu blok yang dianggap sebagai kandidat untuk posisi yang sama.
+
+Ethereum menggunakan aturan **GHOST/LMD-GHOST** sebagai bagian dari mekanisme fork choice untuk menentukan rantai yang harus dianggap sebagai rantai utama.
+
+Pemilihan tersebut mempertimbangkan bobot attestation dari validator, yang juga memperhitungkan jumlah ETH yang di-*stake*.
+
+### Tahap 6 — Finality
+
+Setelah validator memberikan suara secara cukup kuat terhadap checkpoint tertentu, jaringan dapat mencapai **finality**.
+
+Ethereum menggunakan **Casper Friendly Finality Gadget (Casper FFG)** untuk mekanisme finalitas.
+
+Pada setiap epoch terdapat checkpoint. Validator memberikan suara terhadap pasangan checkpoint. Jika suara tersebut mewakili setidaknya **dua pertiga (2/3)** dari total ETH yang di-*stake*, checkpoint dapat menjadi justified dan kemudian finalized melalui proses Casper FFG.
+
+Setelah sebuah blok mencapai finality, blok tersebut secara praktis tidak dapat diubah tanpa konsekuensi ekonomi yang sangat besar bagi pihak yang mencoba menyerang jaringan.
+
+---
+
+## 6. Gasper
+
+Mekanisme konsensus Ethereum secara keseluruhan dikenal sebagai **Gasper**.
+
+Gasper merupakan gabungan dari dua komponen utama:
+
+### a. Casper FFG
+
+Casper FFG berfungsi untuk memberikan **finality** pada blockchain.
+
+Dengan Casper FFG, validator memberikan suara terhadap checkpoint. Jika dukungan mencapai setidaknya dua pertiga dari total ETH yang di-*stake*, checkpoint dapat mencapai status finalized.
+
+### b. GHOST / LMD-GHOST
+
+GHOST digunakan sebagai **fork-choice rule**.
+
+Fungsinya adalah membantu menentukan rantai mana yang harus dianggap sebagai rantai utama ketika terdapat beberapa kandidat blok atau terjadi percabangan.
+
+Pemilihan dilakukan berdasarkan bobot suara validator.
+
+Jadi secara sederhana:
+
+```text
+              GASPER
+                 │
+        ┌────────┴────────┐
+        │                 │
+    Casper FFG        GHOST/LMD-GHOST
+        │                 │
+    Finality          Fork Choice
+        │                 │
+        └────────┬────────┘
+                 │
+        Konsensus Ethereum
+```
+
+---
+
+## 7. Reward dan Penalti
+
+Proof of Stake Ethereum menggunakan sistem insentif untuk mendorong validator berperilaku jujur.
+
+Validator yang menjalankan tugasnya dengan benar dapat memperoleh reward ETH.
+
+Sebaliknya, validator dapat kehilangan reward jika tidak menjalankan tugasnya. Untuk tindakan tertentu yang menunjukkan perilaku jahat, seperti memberikan suara yang bertentangan atau mengusulkan blok yang tidak seharusnya, validator dapat terkena **slashing**.
+
+Dengan mekanisme tersebut, menyerang jaringan menjadi mahal karena penyerang mempertaruhkan ETH yang dapat hilang apabila melakukan tindakan yang melanggar aturan.
+
+---
+
+## 8. Mengapa Proof of Stake Aman?
+
+Keamanan Ethereum tidak hanya bergantung pada software, tetapi juga pada insentif ekonomi.
+
+Validator memiliki ETH yang di-*stake* sebagai jaminan. Oleh karena itu, validator mempunyai kepentingan untuk mengikuti aturan jaringan.
+
+Jika validator bertindak jujur:
+
+```text
+Stake ETH
+    ↓
+Validasi blok dengan benar
+    ↓
+Mendapat reward
+```
+
+Jika validator melakukan tindakan yang melanggar aturan:
+
+```text
+Stake ETH
+    ↓
+Melakukan tindakan berbahaya
+    ↓
+Penalti / Slashing
+    ↓
+ETH dapat hilang
+```
+
+Dengan cara tersebut, biaya ekonomi untuk mencoba menyerang jaringan menjadi sangat besar.
+
+---
+
+## 9. Ringkasan Mekanisme Konsensus Ethereum
+
+Secara keseluruhan, mekanisme konsensus Ethereum dapat diringkas sebagai berikut:
+
+1. Pengguna membuat transaksi.
+2. Transaksi disebarkan ke jaringan.
+3. Pada setiap slot, satu validator dipilih secara acak sebagai block proposer.
+4. Block proposer membuat dan menyebarkan blok.
+5. Validator lain memeriksa blok tersebut.
+6. Validator memberikan **attestation** sebagai suara terhadap blok.
+7. Fork-choice menggunakan **GHOST/LMD-GHOST** untuk menentukan rantai yang dianggap benar.
+8. **Casper FFG** menggunakan suara validator terhadap checkpoint untuk mencapai finality.
+9. Validator yang berperilaku benar mendapatkan reward.
+10. Validator yang melakukan tindakan tertentu yang melanggar aturan dapat dikenai penalti atau slashing.
+
+Dengan demikian, Ethereum dapat mencapai kesepakatan mengenai keadaan blockchain tanpa menggunakan penambangan berbasis komputasi seperti pada Proof of Work.
+
+### Kesimpulan
+
+Ethereum menggunakan **Proof of Stake** sebagai dasar mekanisme konsensusnya. Validator melakukan staking ETH untuk berpartisipasi dalam proses validasi. Pada setiap slot, validator dipilih untuk mengusulkan blok, sementara validator lainnya memberikan attestation terhadap blok tersebut.
+
+Mekanisme konsensus Ethereum secara keseluruhan disebut **Gasper**, yang menggabungkan **Casper FFG** untuk finality dan **GHOST/LMD-GHOST** untuk fork choice. Kombinasi tersebut memungkinkan jaringan Ethereum menentukan rantai yang benar, mencapai finality, serta memberikan insentif ekonomi agar validator berperilaku jujur.
+
+
+
+
